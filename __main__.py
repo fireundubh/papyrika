@@ -44,11 +44,20 @@ def main():
             scriptname_keyword, script_path, *declaration_suffixes = scriptname_declaration.strip().split(' ')
 
             # parse script path
-            *script_path_prefixes, script_name = script_path.split(':')
+            script_path_prefixes = None
+            script_path_separator = ':'
+
+            if script_path_separator in script_path:
+                *script_path_prefixes, script_name = script_path.split(script_path_separator)
+            else:
+                script_name = script_path
 
             if not (script_name == file_name):
-                path_elements = [*script_path_prefixes, file_name]
-                fixed_script_path = ':'.join(path_elements)
+                if script_path_separator in script_path:
+                    path_elements = [*script_path_prefixes, file_name]
+                    fixed_script_path = script_path_separator.join(path_elements)
+                else:
+                    fixed_script_path = file_name
 
                 line_elements = [scriptname_keyword, fixed_script_path, *declaration_suffixes]
                 lines[i] = whitespace + ' '.join(line_elements) + '\n'
